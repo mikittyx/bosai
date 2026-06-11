@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>校内 消防設備たんけんラリー</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Maru+Gothic:wght@500;700;900&family=Zen+Kaku+Gothic+New:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#E7EAED;
+    --bg2:#DCE0E4;
+    --card:#FFFFFF;
+    --ink:#1E2024;
+    --sub:#5A6068;
+    --line:#D2D6DA;
+    --fire:#E63329;
+    --fire-deep:#A81B17;
+    --alert:#EE7D0E;
+    --exit:#1A8F5B;
+    --aid:#2D6FE0;
+    --warn:#F4A91F;
+    --paper-line:#EEF0F2;
+    --shadow:0 2px 0 rgba(30,32,36,.06), 0 10px 24px -12px rgba(30,32,36,.30);
+    --radius:18px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:"Zen Maru Gothic",system-ui,sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(120% 80% at 50% -10%, #F2F4F6 0%, var(--bg) 55%, var(--bg2) 100%) fixed;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    padding:0 0 96px;
+  }
+  .wrap{max-width:880px;margin:0 auto;padding:0 16px}
+
+  /* ---------- header ---------- */
+  header{
+    position:relative;
+    padding:22px 16px 18px;
+    overflow:hidden;
+  }
+  .hose{
+    position:absolute;inset:0 0 auto 0;height:8px;
+    background:repeating-linear-gradient(90deg,var(--fire) 0 26px,#fff 26px 52px);
+    opacity:.9;
+  }
+  .head-inner{max-width:880px;margin:0 auto;padding-top:14px}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:7px;
+    font-family:"Zen Kaku Gothic New";font-weight:700;font-size:12px;letter-spacing:.14em;
+    color:var(--fire-deep);background:#fff;border:2px solid var(--fire);
+    padding:5px 11px;border-radius:999px;
+  }
+  .eyebrow b{width:9px;height:9px;border-radius:50%;background:var(--fire);display:inline-block;animation:blink 1.4s infinite}
+  @keyframes blink{50%{opacity:.25}}
+  h1{
+    font-family:"Dela Gothic One";font-weight:400;
+    font-size:clamp(26px,7vw,40px);line-height:1.12;margin:12px 0 6px;letter-spacing:.01em;
+  }
+  h1 .accent{color:var(--fire)}
+  .lede{color:var(--sub);font-weight:500;font-size:14px;margin:0 0 18px;max-width:30em}
+
+  /* ---------- progress ---------- */
+  .progress-card{
+    background:var(--card);border:2px solid var(--ink);border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:16px 18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  }
+  .gauge{position:relative;width:74px;height:74px;flex:0 0 auto}
+  .gauge svg{transform:rotate(-90deg)}
+  .gauge .num{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-family:"Dela Gothic One";font-size:20px;
+  }
+  .prog-text{flex:1;min-width:160px}
+  .prog-text .big{font-family:"Zen Kaku Gothic New";font-weight:900;font-size:17px}
+  .prog-text .small{color:var(--sub);font-size:13px;margin-top:2px;font-weight:500}
+  .bar{height:12px;border-radius:999px;background:var(--bg2);border:2px solid var(--ink);overflow:hidden;margin-top:9px}
+  .bar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--fire),var(--alert));transition:width .6s cubic-bezier(.2,.9,.2,1)}
+  .prog-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+  /* ---------- buttons ---------- */
+  button{font-family:inherit;cursor:pointer}
+  .btn{
+    border:2px solid var(--ink);background:#fff;color:var(--ink);
+    font-weight:700;font-size:13px;border-radius:11px;padding:9px 14px;
+    box-shadow:0 2px 0 var(--ink);transition:transform .08s, box-shadow .08s;
+  }
+  .btn:active{transform:translateY(2px);box-shadow:0 0 0 var(--ink)}
+  .btn.primary{background:var(--fire);color:#fff;border-color:var(--fire-deep);box-shadow:0 2px 0 var(--fire-deep)}
+  .btn.primary:active{box-shadow:0 0 0 var(--fire-deep)}
+  .btn.ghost{box-shadow:none;border-color:var(--line);color:var(--sub);background:transparent}
+  .btn.ghost:active{transform:translateY(1px)}
+  .btn.tiny{font-size:12px;padding:7px 11px}
+
+  /* ---------- grid ---------- */
+  .section-label{
+    display:flex;align-items:center;gap:10px;margin:26px 2px 12px;
+  }
+  .section-label h2{font-family:"Zen Kaku Gothic New";font-weight:900;font-size:15px;margin:0}
+  .section-label .ln{flex:1;height:2px;background:var(--line);border-radius:2px}
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  @media(min-width:620px){.grid{grid-template-columns:repeat(3,1fr)}}
+  .cat-section{margin-bottom:24px}
+  .cat-head{display:flex;align-items:center;gap:11px;margin:0 2px 12px}
+  .cat-ic{width:32px;height:32px;border-radius:9px;background:var(--c,#E63329);color:#fff;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .cat-ic svg{width:19px;height:19px}
+  .cat-tt{flex:1;display:flex;flex-direction:column;line-height:1.25;min-width:0}
+  .cat-tt b{font-family:"Zen Kaku Gothic New";font-weight:900;font-size:14.5px}
+  .cat-tt i{font-style:normal;font-size:11px;color:var(--sub);font-weight:500;margin-top:1px}
+  .cat-count{font-family:"Dela Gothic One";font-size:12.5px;color:var(--c,#E63329);flex:0 0 auto;background:#fff;border:2px solid var(--c,#E63329);border-radius:999px;padding:2px 10px}
+
+  .card{
+    position:relative;background:var(--card);border:2px solid var(--ink);border-radius:16px;
+    padding:13px 13px 14px;box-shadow:var(--shadow);overflow:hidden;text-align:left;
+    display:flex;flex-direction:column;gap:9px;min-height:148px;
+    transition:transform .1s;
+  }
+  .card:active{transform:scale(.985)}
+  .card .no{
+    position:absolute;top:9px;right:11px;font-family:"Dela Gothic One";font-size:13px;color:var(--line)
+  }
+  .chip{
+    display:inline-flex;align-items:center;gap:6px;align-self:flex-start;
+    font-family:"Zen Kaku Gothic New";font-weight:700;font-size:11px;letter-spacing:.04em;
+    padding:3px 9px 3px 7px;border-radius:999px;color:#fff;
+  }
+  .chip svg{width:13px;height:13px}
+  .icon-wrap{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;color:#fff}
+  .icon-wrap svg{width:24px;height:24px}
+  .card h3{font-family:"Zen Maru Gothic";font-weight:900;font-size:14.5px;margin:0;line-height:1.25}
+  .card .hint{color:var(--sub);font-size:11.5px;font-weight:500;line-height:1.4;margin-top:-2px}
+  .card .foot{margin-top:auto;display:flex;align-items:center;gap:7px;font-size:11.5px;font-weight:700}
+  .card .foot .todo{color:var(--fire)}
+  .card .thumb{
+    position:absolute;inset:0;background-size:cover;background-position:center;
+  }
+  .card.done .thumb::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.45))}
+  .card.done h3,.card.done .hint,.card.done .no{color:#fff;position:relative}
+  .card.done .chip{position:relative}
+  .card.done .icon-wrap{display:none}
+  .stamp{
+    position:absolute;right:8px;bottom:8px;width:62px;height:62px;border-radius:50%;
+    border:3px solid var(--fire);color:var(--fire);display:flex;align-items:center;justify-content:center;
+    font-family:"Dela Gothic One";font-size:15px;transform:rotate(-14deg);
+    background:rgba(255,255,255,.86);box-shadow:0 2px 8px rgba(0,0,0,.2);
+    line-height:1;text-align:center;
+  }
+  .card.done .foot{position:relative;color:#fff}
+  .card.just .stamp{animation:stampin .5s cubic-bezier(.2,1.5,.4,1)}
+  @keyframes stampin{0%{transform:rotate(-14deg) scale(2.4);opacity:0}55%{opacity:1}70%{transform:rotate(-14deg) scale(.9)}100%{transform:rotate(-14deg) scale(1)}}
+
+  /* ---------- modal ---------- */
+  .overlay{position:fixed;inset:0;background:rgba(20,22,26,.55);backdrop-filter:blur(3px);
+    display:none;align-items:flex-end;justify-content:center;z-index:50;padding:0}
+  .overlay.open{display:flex}
+  @media(min-width:620px){.overlay{align-items:center;padding:20px}}
+  .sheet{
+    background:var(--card);width:100%;max-width:560px;border-radius:22px 22px 0 0;
+    border:2px solid var(--ink);border-bottom:none;box-shadow:0 -10px 40px rgba(0,0,0,.3);
+    max-height:92vh;overflow:auto;animation:slideup .28s cubic-bezier(.2,.9,.2,1);
+  }
+  @media(min-width:620px){.sheet{border-radius:22px;border-bottom:2px solid var(--ink)}}
+  @keyframes slideup{from{transform:translateY(30px);opacity:.4}to{transform:translateY(0);opacity:1}}
+  .sheet-head{padding:18px 18px 0;display:flex;gap:12px;align-items:flex-start}
+  .sheet-head .icon-wrap{width:48px;height:48px}
+  .sheet-head .tt{flex:1}
+  .sheet-head h3{font-family:"Zen Maru Gothic";font-weight:900;font-size:19px;margin:2px 0 4px}
+  .x{border:none;background:var(--bg2);width:34px;height:34px;border-radius:50%;font-size:18px;line-height:1;color:var(--ink);flex:0 0 auto}
+  .sheet-body{padding:14px 18px 22px}
+  .info-row{display:flex;gap:9px;align-items:flex-start;background:var(--bg);border-radius:12px;padding:11px 12px;margin-bottom:10px}
+  .info-row .ic{flex:0 0 auto;width:22px;height:22px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:900;font-family:"Zen Kaku Gothic New"}
+  .info-row .tx{font-size:13.5px;font-weight:500;line-height:1.5}
+  .info-row .tx b{display:block;font-family:"Zen Kaku Gothic New";font-weight:900;font-size:11.5px;color:var(--sub);letter-spacing:.04em;margin-bottom:2px}
+  .photo-area{margin-top:6px}
+  .photo-frame{
+    width:100%;aspect-ratio:4/3;border-radius:14px;border:2px dashed var(--line);
+    background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+    color:var(--sub);font-weight:700;font-size:13px;overflow:hidden;
+  }
+  .photo-frame img{width:100%;height:100%;object-fit:cover}
+  .photo-frame.has{border-style:solid;border-color:var(--ink)}
+  .sheet-actions{display:flex;gap:10px;margin-top:14px}
+  .sheet-actions .btn{flex:1;justify-content:center;display:flex;align-items:center;gap:7px}
+
+  /* ---------- editor ---------- */
+  .ed-row{display:flex;gap:8px;align-items:center;padding:10px;border:2px solid var(--line);border-radius:12px;margin-bottom:9px;background:#fff}
+  .ed-row .grip{color:var(--line);font-weight:900}
+  .ed-row input,.ed-row select,.field input,.field select,.field textarea{
+    font-family:inherit;font-size:13px;border:2px solid var(--line);border-radius:9px;padding:8px 9px;width:100%;color:var(--ink);background:#fff
+  }
+  .ed-row .col{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+  .ed-del{border:none;background:#FBE9E8;color:var(--fire-deep);width:30px;height:30px;border-radius:8px;font-size:16px;flex:0 0 auto}
+  .field{margin-bottom:12px}
+  .field label{display:block;font-family:"Zen Kaku Gothic New";font-weight:700;font-size:12px;margin-bottom:5px;color:var(--sub)}
+  .field textarea{resize:vertical;min-height:60px}
+  .cat-pick{display:flex;gap:6px;flex-wrap:wrap}
+  .cat-pick button{border:2px solid var(--line);background:#fff;border-radius:9px;padding:7px 10px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px}
+  .cat-pick button.sel{border-color:var(--ink);box-shadow:0 2px 0 var(--ink)}
+  .cat-pick button .dot{width:12px;height:12px;border-radius:50%}
+
+  /* ---------- celebrate ---------- */
+  .cele{position:fixed;inset:0;z-index:80;display:none;align-items:center;justify-content:center;padding:20px}
+  .cele.open{display:flex}
+  .cele canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  .cert{
+    position:relative;background:#fff;border:3px solid var(--ink);border-radius:20px;
+    max-width:380px;width:100%;padding:30px 26px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.4);
+    animation:pop .5s cubic-bezier(.2,1.5,.4,1)
+  }
+  @keyframes pop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+  .cert .seal{width:84px;height:84px;border-radius:50%;border:4px solid var(--fire);color:var(--fire);
+    display:flex;align-items:center;justify-content:center;font-family:"Dela Gothic One";font-size:30px;margin:0 auto 14px;transform:rotate(-8deg)}
+  .cert h2{font-family:"Dela Gothic One";font-size:24px;margin:0 0 6px}
+  .cert p{color:var(--sub);font-weight:500;font-size:14px;line-height:1.6;margin:0 0 18px}
+
+  footer{text-align:center;color:var(--sub);font-size:11.5px;font-weight:500;margin-top:30px;line-height:1.7}
+
+  .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:#fff;font-weight:700;font-size:13px;padding:11px 18px;border-radius:12px;
+    opacity:0;transition:.3s;z-index:90;pointer-events:none;max-width:88vw}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.001ms !important;transition-duration:.001ms !important}
+  }
+  :focus-visible{outline:3px solid var(--aid);outline-offset:2px;border-radius:6px}
+</style>
+</head>
+<body>
+<header>
+  <div class="hose"></div>
+  <div class="head-inner">
+    <span class="eyebrow"><b></b>SCHOOL FIRE SAFETY RALLY</span>
+    <h1 id="title">校内 <span class="accent">消防設備</span><br>たんけんラリー</h1>
+    <p class="lede" id="subtitle">校内にある消防・防災のせつびを見つけて、写真でスタンプを集めよう。もしものとき、どこに何があるかを知っておくのがいちばんの備えです。</p>
+    <div class="progress-card">
+      <div class="gauge">
+        <svg width="74" height="74" viewBox="0 0 74 74">
+          <circle cx="37" cy="37" r="31" fill="none" stroke="#E2E6EA" stroke-width="9"/>
+          <circle id="gaugeArc" cx="37" cy="37" r="31" fill="none" stroke="#E63329" stroke-width="9" stroke-linecap="round" stroke-dasharray="195" stroke-dashoffset="195"/>
+        </svg>
+        <div class="num"><span id="gaugePct">0</span></div>
+      </div>
+      <div class="prog-text">
+        <div class="big"><span id="doneCount">0</span> / <span id="totalCount">0</span> こ 達成！</div>
+        <div class="small" id="progMsg">さあ、最初のせつびを探しに行こう。</div>
+        <div class="bar"><i id="barFill"></i></div>
+      </div>
+      <div class="prog-actions">
+        <button class="btn tiny ghost" id="editBtn">せつびを編集</button>
+        <button class="btn tiny ghost" id="resetBtn">リセット</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="section-label">
+    <h2>スタンプ帳</h2><div class="ln"></div>
+    <button class="btn tiny" id="addBtn">＋ 追加</button>
+  </div>
+  <div id="grid"></div>
+  <footer>
+    タップして設備をひらき、その場で写真をとるとスタンプが押されます。<br>
+    写真と進みぐあいはこの端末に保存されます。
+  </footer>
+</main>
+
+<!-- detail sheet -->
+<div class="overlay" id="detailOverlay">
+  <div class="sheet" id="detailSheet" role="dialog" aria-modal="true"></div>
+</div>
+
+<!-- editor sheet -->
+<div class="overlay" id="editorOverlay">
+  <div class="sheet" role="dialog" aria-modal="true">
+    <div class="sheet-head">
+      <div class="tt"><h3>せつびを編集</h3>
+        <p style="color:var(--sub);font-weight:500;font-size:13px;margin:2px 0 0">校内の実際の配置に合わせて、名前・場所のヒント・メモを変えられます。</p>
+      </div>
+      <button class="x" id="editorClose" aria-label="とじる">×</button>
+    </div>
+    <div class="sheet-body">
+      <div class="field">
+        <label>ラリーのタイトル</label>
+        <input id="edTitle" type="text">
+      </div>
+      <div id="edList"></div>
+      <button class="btn" id="edAdd" style="width:100%;margin-top:4px">＋ せつびを追加</button>
+      <div class="sheet-actions">
+        <button class="btn ghost" id="edCancel">キャンセル</button>
+        <button class="btn primary" id="edSave">保存する</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- celebrate -->
+<div class="cele" id="cele">
+  <canvas id="confetti"></canvas>
+  <div class="cert">
+    <div class="seal">済</div>
+    <h2>パトロール<br>かんりょう！</h2>
+    <p id="celeMsg">校内のすべての消防設備を見つけました。<br>いざというとき、あなたは「どこに何があるか」を知っています。</p>
+    <button class="btn primary" id="celeClose" style="width:100%">とじる</button>
+  </div>
+</div>
+
+<input type="file" id="cameraInput" accept="image/*" capture="environment" hidden>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===================== storage (with fallback) ===================== */
+const mem = {};
+const store = {
+  async get(k){
+    try{ if(window.storage){ const r=await window.storage.get(k); return r?r.value:null; } }catch(e){}
+    try{ const v=localStorage.getItem(k); if(v!==null) return v; }catch(e){}
+    return mem[k] ?? null;
+  },
+  async set(k,v){
+    mem[k]=v;
+    try{ if(window.storage){ await window.storage.set(k,v); return; } }catch(e){}
+    try{ localStorage.setItem(k,v); }catch(e){}
+  },
+  async del(k){
+    delete mem[k];
+    try{ if(window.storage) await window.storage.delete(k); }catch(e){}
+    try{ localStorage.removeItem(k); }catch(e){}
+  }
+};
+const META_KEY="firerally:meta:v1";
+const PHOTO_KEY=id=>"firerally:photo:"+id;
+
+/* ===================== icons & categories ===================== */
+const ICONS={
+  fire:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c.4 3.2-1.8 4.4-3.1 6C7.3 9.9 7 11.4 7 13a5 5 0 0 0 10 0c0-2.2-1-3.8-2.2-5.3C13.4 5.9 12.6 4.2 12 2Zm0 17a3 3 0 0 1-3-3c0-1.2.7-2.2 1.6-3 .1 1 .7 1.7 1.4 2.2.7-.6 1-1.5.9-2.6 1.2.8 2.1 2 2.1 3.4a3 3 0 0 1-3 3Z"/></svg>',
+  alert:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a6 6 0 0 0-6 6v3.6l-1.7 3A1 1 0 0 0 5.2 16h13.6a1 1 0 0 0 .9-1.4l-1.7-3V8a6 6 0 0 0-6-6Zm0 20a2.8 2.8 0 0 0 2.8-2.6H9.2A2.8 2.8 0 0 0 12 22Z"/></svg>',
+  exit:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 2.4 5.5 4.2A1.5 1.5 0 0 0 4.5 5.6v12.8a1.5 1.5 0 0 0 1 1.4l5.5 1.8A1.3 1.3 0 0 0 12.7 20V3.6A1.3 1.3 0 0 0 11 2.4ZM9.3 13a1.05 1.05 0 1 1 0-2.1 1.05 1.05 0 0 1 0 2.1Z"/><path d="M15 7.4v2.5h-2.3v3.2H15v2.5l4.6-4.6L15 7.4Z"/></svg>',
+  aid:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 3a2 2 0 0 0-2 2v2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2v2a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-2h2a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2V5a2 2 0 0 0-2-2H9Zm4 5v3h3v2h-3v3h-2v-3H8v-2h3V8h2Z"/></svg>'
+};
+const CATS={
+  fire:{label:"消火",color:"#E63329"},
+  alert:{label:"通報",color:"#EE7D0E"},
+  exit:{label:"避難",color:"#1A8F5B"},
+  aid:{label:"救護",color:"#2D6FE0"}
+};
+function catChip(cat){const c=CATS[cat]||CATS.fire;return `<span class="chip" style="background:${c.color}">${ICONS[cat]||ICONS.fire}${c.label}</span>`}
+
+/* ===================== default facilities ===================== */
+const DEFAULTS=[
+  {id:"f1",cat:"fire",name:"消火器",hint:"廊下の角・階段の下・教室の出入口近くにあることが多いよ。",note:"ピンを抜く→ホースを火元に向ける→レバーを強くにぎる。火元の手前から、ほうきで掃くように。"},
+  {id:"f2",cat:"fire",name:"屋内消火栓",hint:"赤いとびらの箱。廊下の壁にうめこまれていることが多い。",note:"中にホースとノズルが入っている。ボタンを押すとポンプが動き、水が出る。2人で操作するタイプもある。"},
+  {id:"f3",cat:"alert",name:"火災報知機（発信機）",hint:"赤い丸い押しボタン。壁の少し高いところに。",note:"火事に気づいたら押すと、校内に非常ベルが鳴る。みんなに知らせる大事なスイッチ。いたずら厳禁！"},
+  {id:"f4",cat:"alert",name:"煙感知器",hint:"廊下・教室・階段の天井を見上げてみよう。白くて丸い形をしているよ。",note:"天井にある「見張り役」。煙をいち早くキャッチすると、自動で火災を知らせてくれる。煙は上のほうにたまるので、高いところに付いている。"},
+  {id:"f5",cat:"exit",name:"誘導灯（非常口サイン）",hint:"出口やドアの上の、緑色に光るマーク。",note:"停電でも光りつづける。緑のサインは「安全な方向（出口）」をしめす目印。走っている人の向きが逃げる方向。"},
+  {id:"f6",cat:"exit",name:"非常口・避難経路図",hint:"昇降口や階段のそば。地図がはってある場所も。",note:"自分の教室から外までのルートを2つ覚えておくと安心。ふだんから「どっちに逃げる？」を意識しよう。"},
+  {id:"f7",cat:"exit",name:"防火扉・防火シャッター",hint:"廊下や階段のさかい目。ふだんは開いている重いとびら。",note:"火事のとき自動で閉まり、火と煙の広がりを止める。閉まる場所に物を置かないこと。"},
+  {id:"f8",cat:"exit",name:"避難はしご・救助袋",hint:"上の階のベランダや、窓ぎわの収納を探そう。",note:"階段が使えないとき、上の階から地上へおりるための設備。先生の指示があるまでは使わない。"},
+  {id:"f9",cat:"aid",name:"AED",hint:"職員室・保健室・体育館の入口あたりに多い。",note:"心臓が止まった人を助ける機械。ふたを開けると音声がガイドしてくれるので、だれでも使える。"}
+];
+
+/* ===================== state ===================== */
+let state={title:"校内 消防設備たんけんラリー",items:[]};
+let justId=null;
+
+async function load(){
+  const raw=await store.get(META_KEY);
+  if(raw){
+    try{const p=JSON.parse(raw);state.title=p.title||state.title;state.items=p.items||[];}
+    catch(e){state.items=structuredClone(DEFAULTS);}
+  }else{
+    state.items=structuredClone(DEFAULTS);
+  }
+  // load photos for done items
+  for(const it of state.items){
+    if(it.done){ it.photo=await store.get(PHOTO_KEY(it.id)); }
+  }
+}
+async function saveMeta(){
+  const meta={title:state.title,items:state.items.map(({photo,...r})=>r)};
+  await store.set(META_KEY,JSON.stringify(meta));
+}
+
+/* ===================== render ===================== */
+const $=s=>document.querySelector(s);
+const grid=$("#grid");
+
+const CAT_ORDER=["fire","alert","exit","aid"];
+const CAT_DESC={fire:"火を消すための設備",alert:"火事に気づく・知らせる設備",exit:"安全ににげるための設備",aid:"いのちを守る・助ける設備"};
+
+function buildCard(it,n){
+  const c=CATS[it.cat]||CATS.fire;
+  const el=document.createElement("button");
+  el.className="card"+(it.done?" done":"")+(justId===it.id?" just":"");
+  el.setAttribute("aria-label",it.name+(it.done?"（達成ずみ）":"（みつけよう）"));
+  el.innerHTML=`
+    ${it.done&&it.photo?`<div class="thumb" style="background-image:url('${it.photo}')"></div>`:""}
+    <span class="no">${String(n).padStart(2,"0")}</span>
+    ${catChip(it.cat)}
+    ${it.done?"":`<div class="icon-wrap" style="background:${c.color}">${ICONS[it.cat]||ICONS.fire}</div>`}
+    <h3>${esc(it.name)}</h3>
+    <div class="hint">${it.done?"見つけたよ！":esc(it.hint||"")}</div>
+    <div class="foot">${it.done?'<span>📸 さつえいずみ</span>':'<span class="todo">● みつけよう</span>'}</div>
+    ${it.done?'<div class="stamp">済</div>':""}
+  `;
+  el.addEventListener("click",()=>openDetail(it.id));
+  return el;
+}
+
+function render(){
+  $("#title").innerHTML = state.title.replace("消防設備",'<span class="accent">消防設備</span>');
+  document.title=state.title;
+  grid.innerHTML="";
+  const seen=new Set();
+  CAT_ORDER.forEach(cat=>{
+    const list=state.items.filter(it=>(it.cat||"fire")===cat);
+    if(!list.length)return;
+    list.forEach(it=>seen.add(it.id));
+    const c=CATS[cat];
+    const doneN=list.filter(i=>i.done).length;
+    const sec=document.createElement("section");
+    sec.className="cat-section";
+    sec.style.setProperty("--c",c.color);
+    sec.innerHTML=`
+      <div class="cat-head">
+        <span class="cat-ic">${ICONS[cat]||ICONS.fire}</span>
+        <span class="cat-tt"><b>${c.label}</b><i>${esc(CAT_DESC[cat]||"")}</i></span>
+        <span class="cat-count">${doneN}/${list.length}</span>
+      </div>
+      <div class="grid"></div>`;
+    const g=sec.querySelector(".grid");
+    list.forEach((it,i)=>g.appendChild(buildCard(it,i+1)));
+    grid.appendChild(sec);
+  });
+  // 念のため、4ジャンルに当てはまらない設備があれば最後にまとめる
+  const others=state.items.filter(it=>!seen.has(it.id));
+  if(others.length){
+    const sec=document.createElement("section");
+    sec.className="cat-section";sec.style.setProperty("--c","#5A6068");
+    sec.innerHTML=`<div class="cat-head"><span class="cat-tt"><b>そのほか</b></span><span class="cat-count">${others.filter(i=>i.done).length}/${others.length}</span></div><div class="grid"></div>`;
+    const g=sec.querySelector(".grid");
+    others.forEach((it,i)=>g.appendChild(buildCard(it,i+1)));
+    grid.appendChild(sec);
+  }
+  justId=null;
+  updateProgress();
+}
+function esc(s){return (s||"").replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]))}
+
+function updateProgress(){
+  const total=state.items.length;
+  const done=state.items.filter(i=>i.done).length;
+  const pct=total?Math.round(done/total*100):0;
+  $("#doneCount").textContent=done;
+  $("#totalCount").textContent=total;
+  $("#gaugePct").textContent=pct;
+  $("#barFill").style.width=pct+"%";
+  const C=2*Math.PI*31;
+  const arc=$("#gaugeArc");
+  arc.style.strokeDasharray=C;
+  arc.style.strokeDashoffset=C*(1-pct/100);
+  let msg="さあ、最初のせつびを探しに行こう。";
+  if(done>0&&done<total)msg=`いい調子！のこり ${total-done} こ。`;
+  if(done===total&&total>0)msg="ぜんぶ達成！校内マスターだ。";
+  $("#progMsg").textContent=msg;
+}
+
+/* ===================== detail ===================== */
+let activeId=null;
+function openDetail(id){
+  activeId=id;
+  const it=state.items.find(x=>x.id===id);
+  const c=CATS[it.cat]||CATS.fire;
+  const sheet=$("#detailSheet");
+  sheet.innerHTML=`
+    <div class="sheet-head">
+      <div class="icon-wrap" style="background:${c.color}">${ICONS[it.cat]||ICONS.fire}</div>
+      <div class="tt">
+        ${catChip(it.cat)}
+        <h3>${esc(it.name)}</h3>
+      </div>
+      <button class="x" id="detailClose" aria-label="とじる">×</button>
+    </div>
+    <div class="sheet-body">
+      <div class="info-row"><div class="ic" style="background:#F4A91F">?</div>
+        <div class="tx"><b>みつけるヒント</b>${esc(it.hint||"校内をよく探してみよう。")}</div></div>
+      <div class="info-row"><div class="ic" style="background:${c.color}">!</div>
+        <div class="tx"><b>この設備の役割・つかいかた</b>${esc(it.note||"")}</div></div>
+      <div class="photo-area">
+        <div class="photo-frame ${it.photo?'has':''}" id="photoFrame">
+          ${it.photo?`<img src="${it.photo}" alt="${esc(it.name)}の写真">`:'<div style="font-size:30px">📷</div><div>見つけたら写真をとろう</div>'}
+        </div>
+        <div class="sheet-actions">
+          <button class="btn primary" id="shootBtn">${it.photo?'📸 とりなおす':'📸 写真をとってスタンプ'}</button>
+          ${it.done?'<button class="btn ghost" id="undoBtn">取り消し</button>':''}
+        </div>
+      </div>
+    </div>`;
+  $("#detailOverlay").classList.add("open");
+  $("#detailClose").onclick=closeDetail;
+  $("#shootBtn").onclick=()=>{ pendingId=id; $("#cameraInput").click(); };
+  const undo=$("#undoBtn"); if(undo) undo.onclick=()=>undoItem(id);
+}
+function closeDetail(){$("#detailOverlay").classList.remove("open");activeId=null;}
+$("#detailOverlay").addEventListener("click",e=>{if(e.target.id==="detailOverlay")closeDetail();});
+
+/* ===================== camera & resize ===================== */
+let pendingId=null;
+$("#cameraInput").addEventListener("change",async e=>{
+  const file=e.target.files&&e.target.files[0];
+  e.target.value="";
+  if(!file||!pendingId)return;
+  const id=pendingId;pendingId=null;
+  toast("写真を保存中…");
+  try{
+    const data=await resizeImage(file,820,0.74);
+    const it=state.items.find(x=>x.id===id);
+    const wasDone=it.done;
+    it.photo=data; it.done=true; it.doneAt=Date.now();
+    await store.set(PHOTO_KEY(id),data);
+    await saveMeta();
+    justId=id;
+    closeDetail();
+    render();
+    if(!wasDone) toast("スタンプGET！");
+    if(state.items.every(i=>i.done)) setTimeout(celebrate,650);
+  }catch(err){ toast("写真の保存に失敗しました"); }
+});
+function resizeImage(file,maxSide,quality){
+  return new Promise((res,rej)=>{
+    const img=new Image();const url=URL.createObjectURL(file);
+    img.onload=()=>{
+      let{width:w,height:h}=img;
+      const s=Math.min(1,maxSide/Math.max(w,h));
+      w=Math.round(w*s);h=Math.round(h*s);
+      const cv=document.createElement("canvas");cv.width=w;cv.height=h;
+      cv.getContext("2d").drawImage(img,0,0,w,h);
+      URL.revokeObjectURL(url);
+      try{res(cv.toDataURL("image/jpeg",quality));}catch(e){rej(e);}
+    };
+    img.onerror=()=>{URL.revokeObjectURL(url);rej(new Error("img"));};
+    img.src=url;
+  });
+}
+async function undoItem(id){
+  const it=state.items.find(x=>x.id===id);
+  it.done=false;it.photo=null;delete it.doneAt;
+  await store.del(PHOTO_KEY(id));
+  await saveMeta();
+  closeDetail();render();
+  toast("スタンプを取り消しました");
+}
+
+/* ===================== editor ===================== */
+const CAT_KEYS=Object.keys(CATS);
+function openEditor(){
+  $("#edTitle").value=state.title;
+  renderEdList(state.items.map(i=>({...i})));
+  $("#editorOverlay").classList.add("open");
+}
+let edDraft=[];
+function renderEdList(items){
+  edDraft=items;
+  const box=$("#edList");box.innerHTML="";
+  edDraft.forEach((it,idx)=>{
+    const row=document.createElement("div");row.className="ed-row";
+    row.innerHTML=`
+      <div class="col">
+        <input data-k="name" placeholder="設備の名前" value="${esc(it.name)}">
+        <input data-k="hint" placeholder="みつけるヒント（場所など）" value="${esc(it.hint||"")}">
+        <input data-k="note" placeholder="役割・つかいかたのメモ" value="${esc(it.note||"")}">
+        <div class="cat-pick">${CAT_KEYS.map(k=>`<button data-cat="${k}" class="${it.cat===k?'sel':''}"><span class="dot" style="background:${CATS[k].color}"></span>${CATS[k].label}</button>`).join("")}</div>
+      </div>
+      <button class="ed-del" aria-label="削除">🗑</button>`;
+    row.querySelectorAll("input").forEach(inp=>{
+      inp.oninput=()=>{edDraft[idx][inp.dataset.k]=inp.value;};
+    });
+    row.querySelectorAll("[data-cat]").forEach(b=>{
+      b.onclick=()=>{edDraft[idx].cat=b.dataset.cat;
+        row.querySelectorAll("[data-cat]").forEach(x=>x.classList.remove("sel"));
+        b.classList.add("sel");};
+    });
+    row.querySelector(".ed-del").onclick=()=>{edDraft.splice(idx,1);renderEdList(edDraft);};
+    box.appendChild(row);
+  });
+}
+$("#edAdd").onclick=()=>{edDraft.push({id:"u"+Date.now()+Math.floor(Math.random()*99),cat:"fire",name:"",hint:"",note:""});renderEdList(edDraft);};
+$("#edCancel").onclick=$("#editorClose").onclick=()=>$("#editorOverlay").classList.remove("open");
+$("#edSave").onclick=async()=>{
+  const clean=edDraft.filter(i=>i.name.trim());
+  // preserve done/photo from existing
+  for(const d of clean){
+    const old=state.items.find(o=>o.id===d.id);
+    if(old){d.done=old.done;d.doneAt=old.doneAt;d.photo=old.photo;}
+  }
+  state.title=$("#edTitle").value.trim()||state.title;
+  state.items=clean;
+  await saveMeta();
+  $("#editorOverlay").classList.remove("open");
+  render();
+  toast("保存しました");
+};
+$("#editorOverlay").addEventListener("click",e=>{if(e.target.id==="editorOverlay")$("#editorOverlay").classList.remove("open");});
+$("#editBtn").onclick=$("#addBtn").onclick=()=>openEditor();
+// addBtn jumps to a fresh row
+$("#addBtn").onclick=()=>{openEditor();$("#edAdd").click();$("#edList").lastChild.scrollIntoView({behavior:"smooth"});};
+
+/* ===================== reset ===================== */
+$("#resetBtn").onclick=async()=>{
+  if(!confirm("すべてのスタンプと写真をリセットします。よろしいですか？"))return;
+  for(const it of state.items){await store.del(PHOTO_KEY(it.id));it.done=false;it.photo=null;delete it.doneAt;}
+  await saveMeta();render();toast("リセットしました");
+};
+
+/* ===================== celebrate ===================== */
+function celebrate(){
+  $("#cele").classList.add("open");
+  runConfetti();
+}
+$("#celeClose").onclick=()=>{$("#cele").classList.remove("open");stopConfetti&&stopConfetti();};
+let stopConfetti=null;
+function runConfetti(){
+  const cv=$("#confetti");const ctx=cv.getContext("2d");
+  const reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function size(){cv.width=cv.clientWidth;cv.height=cv.clientHeight;}
+  size();window.addEventListener("resize",size);
+  const colors=["#E63329","#EE7D0E","#1A8F5B","#2D6FE0","#F4A91F","#ffffff"];
+  const N=reduce?40:150;
+  let parts=Array.from({length:N},()=>({
+    x:Math.random()*cv.width,y:Math.random()*-cv.height,
+    r:4+Math.random()*7,c:colors[Math.floor(Math.random()*colors.length)],
+    vy:2+Math.random()*4,vx:-1.5+Math.random()*3,rot:Math.random()*6,vr:-.2+Math.random()*.4
+  }));
+  let raf,frames=0;
+  function tick(){
+    frames++;
+    ctx.clearRect(0,0,cv.width,cv.height);
+    parts.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;
+      if(p.y>cv.height+20){p.y=-20;p.x=Math.random()*cv.width;}
+      ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);
+      ctx.fillStyle=p.c;ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*.6);ctx.restore();
+    });
+    if(frames<600&&!reduce)raf=requestAnimationFrame(tick);
+  }
+  if(reduce){tick();}else{tick();}
+  stopConfetti=()=>{cancelAnimationFrame(raf);ctx.clearRect(0,0,cv.width,cv.height);};
+}
+
+/* ===================== toast ===================== */
+let toastT;
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("show"),1800);}
+
+/* ===================== boot ===================== */
+(async function(){
+  await load();
+  render();
+})();
+</script>
+</body>
+</html>
